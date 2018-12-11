@@ -1,12 +1,9 @@
 package com.example.smurf.mtarixcalc
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.widget.EditText
-import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_matrix_calc.*
-import org.jetbrains.anko.activityManager
 import org.jetbrains.anko.toast
 
 class MatrixCalcActivity : AppCompatActivity() {
@@ -24,7 +21,9 @@ class MatrixCalcActivity : AppCompatActivity() {
         {
             val mat = matrixClass(firstMatrix)
 
-            infoOutput.text = mat.determinant().toString()
+            infoOutput.text = ("Determinant is " + (mat.determinant().toString()))
+
+            toast(mat.determinant().toString())
         }
         catch (e : Exception)
         {

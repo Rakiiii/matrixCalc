@@ -2,7 +2,7 @@ package com.example.smurf.mtarixcalc
 
 import android.widget.EditText
 
-class matrixClass(val txt : EditText)
+class matrixClass(txt : EditText)
 {
     //количество столбцов матрицы
     private val width : Int
@@ -34,10 +34,10 @@ class matrixClass(val txt : EditText)
         var info : String = txt.text.toString()
 
         //инициализируем матрицу 0
-        matrix  = Array<Array<complexNumber>>(heigh , { m -> Array<complexNumber>(width , { n -> complexNumber(0.0,0.0) }) })
+        matrix  = Array<Array<complexNumber>>(heigh , { m -> Array<complexNumber>(width , { n -> complexNumber() }) })
 
         //проходим все строки матрицы
-        for(i in 1..heigh)
+        for(i in 0 until heigh)
         {
             //запоминаем текущую строку
             var subLine = info.substringBefore('\n')
@@ -51,20 +51,16 @@ class matrixClass(val txt : EditText)
                 throw Exception("amount of elemnts in line is different")
 
             //проходим все столбцы
-            for( j in 1..width)
+            for( j in 0 until width)
             {
                 //запоминаем текущий столбец
-                var subWord = subLine.substringBefore(' ')
+                val subWord = subLine.substringBefore(' ')
 
                 //удаляем текущий столбец из текущей строки
-                subLine = subLine.substringBefore(' ')
-
-                //разбиваем текущий столбец на отдельные цифры
-                var subIm = subWord.substringAfter('+').filterNot { s -> (s=='i') }
-                var subRe = subWord.substringBefore('+')
+                subLine = subLine.substringAfter(' ')
 
                 //добовляем элемент в матрицу
-                matrix[i][j] = complexNumber(subRe.toDouble() , subIm.toDouble())
+                matrix[i][j] = toComplex(subWord)
             }
         }
     }
@@ -76,8 +72,7 @@ class matrixClass(val txt : EditText)
         //если матрица не квадратная кидаем ошибку
         if( width == heigh && width != 0)
         {
-            var det : complexNumber = det(width , heigh , matrix)
-            return det
+            return det(width , heigh , matrix)
         }
         else throw Exception("matrix is not square")
     }
@@ -86,22 +81,25 @@ class matrixClass(val txt : EditText)
     private fun det(w : Int , h : Int , m : Array<Array<complexNumber>>) : complexNumber
     {
         //инициализируем определитель
-        var det : complexNumber = complexNumber(0.0 , 0.0)
+        var deter = complexNumber(0.0 , 0.0)
 
         //если матрица больше чем 2х2
-        if( w != 2)
+        if( w > 2)
         {
             //раскладываем по первой строке
-            for( k in 1..w)
+            for( k in 0 until w)
             {
                 //наш матрица за вычетом строки и столбца
-               var mat : Array<Array<complexNumber>> = Array<Array<complexNumber>>( h - 1 , { m -> Array<complexNumber>(w-1 , { n -> complexNumber(0.0,0.0) }) })
+               var mat : Array<Array<complexNumber>> = Array<Array<complexNumber>>( h - 1 , { j -> Array<complexNumber>(w-1 , { n -> complexNumber() }) })
 
                 //заполняем минор
-                for( i in 0..mat.size-1)
+                for( i in 0 until h-1)
                 {
-                    var row : Array<complexNumber> = Array(w-1 , { z -> complexNumber(0.0,0.0)})
-                    for( j in 0..row.size)
+                    //создаем пустую строку
+                    var row : Array<complexNumber> = Array(w-1 , { z -> complexNumber()})
+
+                    //копируем все элементы из старой строки
+                    for( j in 0 until w-1)
                     {
                         row[j] = m[i][j]
                     }
@@ -111,12 +109,12 @@ class matrixClass(val txt : EditText)
                 //если число нарушений порядка четное то складываем
                 if(k % 2 != 0)
                 {
-                    det += m[1][k]*det(w - 1, h - 1, mat)
+                    deter += m[0][k]*det(w - 1, h - 1, mat)
                 }
                 //если нечетное то вычитаем
                 else
                 {
-                    det -= m[1][k]*det(w - 1, h - 1, mat)
+                    deter -= m[0][k]*det(w - 1, h - 1, mat)
 
                 }
 
@@ -124,9 +122,10 @@ class matrixClass(val txt : EditText)
         }
         else
         {
-            det = m[1][1]*m[2][2] - m[1][2]*m[2][1]
+            //throw Exception(m[1][1].toString())
+            deter = m[0][0]*m[1][1] - m[0][1]*m[1][0]
         }
-        return det
+        return deter
     }
 
 
