@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MtarixCalc</string>
+    <string name="btnCalculator">Calculator</string>
+    <string name="btnSettings">Settings</string>
+    <string name="btnquadraticreduction">quadratic reduction</string>
+    <string name="Exit">Exit</string>
+    <string name="determinant">Determinant</string>
+    <string name="txtinputBack">Add your matrix there</string>
+</resources>

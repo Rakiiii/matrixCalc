@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent"
+                                             tools:context=".MainActivity">
+
+    <Button
+            android:text="@string/btnCalculator"
+            style="@style/MainActivityBtn"
+            android:id="@+id/btnCalc"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="60dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:onClick="calcClick"
+            />
+    <Button
+            style="@style/MainActivityBtn"
+            android:id="@+id/btnForm"
+            android:text="@string/btnquadraticreduction"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/btnCalc"
+            android:layout_marginTop="90dp"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+    <Button
+            android:text="@string/btnSettings"
+            style="@style/MainActivityBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/btnForm"
+            android:layout_marginTop="90dp"
+            android:id="@+id/btnSettings"
+            />
+
+</android.support.constraint.ConstraintLayout>
