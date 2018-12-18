@@ -17,29 +17,68 @@
                 tools:context=".MatrixCalcActivity">
 
             <Button
+                    style="@style/MatrixCalcActivity"
                     android:id="@+id/btnDeterminant"
                     android:text="@string/determinant"
-                    android:layout_width="100dp"
-                    android:layout_height="40dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginStart="30dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_marginBottom="20dp"
+                    app:layout_constraintTop_toBottomOf="@id/txtinplTwo"
                     android:onClick="countDet"
             />
+            <Button
+                style="@style/MatrixCalcActivity"
+                android:id="@+id/btnPlus"
+                android:text="@string/btnPlus"
+                app:layout_constraintStart_toEndOf="@id/btnDeterminant"
+                app:layout_constraintTop_toBottomOf="@id/txtinplTwo"
+                android:onClick="matrixPlus"
+            />
+            <Button
+                style="@style/MatrixCalcActivity"
+                android:id="@+id/btnMinus"
+                android:text="@string/btnMinus"
+                app:layout_constraintStart_toEndOf="@id/btnPlus"
+                app:layout_constraintTop_toBottomOf="@id/txtinplTwo"
+                android:onClick="matrixMinus"
+            />
+            <Button
+                style="@style/MatrixCalcActivity"
+                android:id="@+id/btnFirstTimesSecond"
+                android:text="@string/btnFirstTimesSecond"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnDeterminant"
+                android:onClick="firstTimesSecondMatrix"
+            />
+            <Button
+                    style="@style/MatrixCalcActivity"
+                    android:id="@+id/btnSecondTimesFirst"
+                    android:text="@string/btnSecondTimesFirst"
+                    app:layout_constraintStart_toEndOf="@id/btnFirstTimesSecond"
+                    app:layout_constraintTop_toBottomOf="@id/btnDeterminant"
+                    android:onClick="secondTimesFirstMatrix"
+            />
+            <Button
+                    style="@style/MatrixCalcActivity"
+                    android:id="@+id/btnInvers"
+                    android:text="@string/btnInvers"
+                    app:layout_constraintStart_toEndOf="@id/btnSecondTimesFirst"
+                    app:layout_constraintTop_toBottomOf="@id/btnDeterminant"
+                    android:onClick="invertMatrix"
+            />
             <android.support.design.widget.TextInputLayout
-                    android:id="@+id/txtInplOne"
+                    android:id="@+id/txtinplOne"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="30dp"
                     >
 
                 <android.support.design.widget.TextInputEditText
                         android:id="@+id/firstMatrix"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/txtinputBack"
+                        android:hint="@string/txtinputBackA"
+
                 />
 
 
@@ -50,17 +89,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/txtinplTwo"
-                    app:layout_constraintTop_toBottomOf="@id/txtInplOne"
-                    app:layout_constraintBottom_toTopOf="@+id/btnDeterminant"
+                    app:layout_constraintTop_toBottomOf="@id/txtinplOne"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="20dp"
                     >
 
                 <android.support.design.widget.TextInputEditText
                         android:id="@+id/secondMatrix"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/txtinputBack"
+                        android:hint="@string/txtinputBackB"
+
                 />
 
 
@@ -73,6 +113,8 @@
                 android:id="@+id/infoOutput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="25sp"
+
         />
 
 

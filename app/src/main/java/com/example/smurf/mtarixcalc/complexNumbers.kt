@@ -38,10 +38,50 @@ class complexNumber(private var re : Double = 0.0 ,private  var im : Double = 0.
         return newNum
     }
 
+    override operator fun equals(other : Any?) : Boolean
+    {
+        when(other) {
+            is complexNumber -> return ((this.re == other.re) && (this.im == other.im))
+            is Int -> return (this.re == other)
+            is Double -> return(this.re == other)
+            is Float -> return(this.re == other)
+            is String -> return(this == toComplex(other))
+            else -> return false
+        }
+    }
+
 
     override fun toString(): String
     {
-        return (re.toString()+'+'+im.toString()+'i')
+        when
+        {
+            //вещественная часть 0 возвращаем только действительную
+            im == 0.0 -> if((re - re.toInt()) != 0.0)return re.toString()else return re.toInt().toString()
+            //действительная часть 0 возарвщвем только мнимую
+            re == 0.0 -> if((im - im.toInt()) != 0.0)return im.toString() + 'i' else return im.toInt().toString() + 'i'
+
+            im < 0 ->
+            {
+                when
+                {
+                    ((im - im.toInt()) != 0.0 && (re - re.toInt()) != 0.0)->return (re.toString() + im.toString() + 'i')
+                    ((im - im.toInt()) == 0.0 && (re - re.toInt()) != 0.0)->return (re.toString() + im.toInt().toString() + 'i')
+                    ((im - im.toInt()) != 0.0 && (re - re.toInt()) == 0.0)->return (re.toInt().toString() + im.toString() + 'i')
+                    else -> return (re.toInt().toString() + im.toInt().toString() + 'i')
+                }
+            }
+
+            else ->
+            {
+                when
+                {
+                    ((im - im.toInt()) != 0.0 && (re - re.toInt()) != 0.0)->return (re.toString() + '+' + im.toString() + 'i')
+                    ((im - im.toInt()) == 0.0 && (re - re.toInt()) != 0.0)->return (re.toString() + '+' + im.toInt().toString() + 'i')
+                    ((im - im.toInt()) != 0.0 && (re - re.toInt()) == 0.0)->return (re.toInt().toString() + '+' + im.toString() + 'i')
+                    else -> return (re.toInt().toString() + '+' + im.toInt().toString() + 'i')
+                }
+            }
+        }
     }
 
 }
@@ -50,7 +90,9 @@ fun translateToComplex(line : String , signIm : Char = '+' , signRe : Char = '+'
 {
     if((signIm != '+' && signIm != '-') || (signRe != '+' && signRe != '-'))throw Exception("unnown char in complex number translation")
     //разбиваем текущий столбец на отдельные цифры
-    var subIm = line.substringAfter(signIm).filterNot { s -> (s == 'i') }.toDouble()
+    var subIm = 0.0
+    if(line.substringAfter(signIm).filterNot { s->(s == 'i') }.isBlank())subIm = 1.0
+    else subIm = line.substringAfter(signIm).filterNot { s -> (s == 'i') }.toDouble()
     var subRe = line.substringBefore(signIm).toDouble()
 
     if(signRe == '-')subRe*=-1
@@ -80,7 +122,7 @@ fun toComplex( mainline : String) : complexNumber
         line.contains('i')->
         {
             var subIm = 0.0
-            if(line.filterNot { s->(s == 'i') } == "")subIm = 1.0
+            if(line.filterNot { s->(s == 'i') }.isBlank())subIm = 1.0
             else subIm = line.filterNot { s -> (s == 'i') }.toDouble()
             if(signRe == '-')subIm*=-1
             return complexNumber(im = subIm)
