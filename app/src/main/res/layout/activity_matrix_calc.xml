@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/scroll"
+            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/scroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -13,57 +13,63 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:layout_height="600dp"
+                android:layout_height="wrap_content"
                 tools:context=".MatrixCalcActivity">
-
-            <Button
+                    <Button
                     style="@style/MatrixCalcActivity"
                     android:id="@+id/btnDeterminant"
                     android:text="@string/determinant"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/txtinplTwo"
+                    app:layout_constraintEnd_toStartOf="@id/btnPlus"
                     android:onClick="countDet"
-            />
-            <Button
-                style="@style/MatrixCalcActivity"
-                android:id="@+id/btnPlus"
-                android:text="@string/btnPlus"
-                app:layout_constraintStart_toEndOf="@id/btnDeterminant"
-                app:layout_constraintTop_toBottomOf="@id/txtinplTwo"
-                android:onClick="matrixPlus"
-            />
-            <Button
-                style="@style/MatrixCalcActivity"
-                android:id="@+id/btnMinus"
-                android:text="@string/btnMinus"
-                app:layout_constraintStart_toEndOf="@id/btnPlus"
-                app:layout_constraintTop_toBottomOf="@id/txtinplTwo"
-                android:onClick="matrixMinus"
-            />
-            <Button
-                style="@style/MatrixCalcActivity"
-                android:id="@+id/btnFirstTimesSecond"
-                android:text="@string/btnFirstTimesSecond"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btnDeterminant"
-                android:onClick="firstTimesSecondMatrix"
-            />
-            <Button
-                    style="@style/MatrixCalcActivity"
-                    android:id="@+id/btnSecondTimesFirst"
-                    android:text="@string/btnSecondTimesFirst"
-                    app:layout_constraintStart_toEndOf="@id/btnFirstTimesSecond"
-                    app:layout_constraintTop_toBottomOf="@id/btnDeterminant"
-                    android:onClick="secondTimesFirstMatrix"
-            />
-            <Button
-                    style="@style/MatrixCalcActivity"
-                    android:id="@+id/btnInvers"
-                    android:text="@string/btnInvers"
-                    app:layout_constraintStart_toEndOf="@id/btnSecondTimesFirst"
-                    app:layout_constraintTop_toBottomOf="@id/btnDeterminant"
-                    android:onClick="invertMatrix"
-            />
+                    />
+                    <Button
+                        style="@style/MatrixCalcActivity"
+                        android:id="@+id/btnPlus"
+                        android:text="@string/btnPlus"
+                        app:layout_constraintStart_toEndOf="@id/btnDeterminant"
+                        app:layout_constraintTop_toBottomOf="@id/txtinplTwo"
+                        app:layout_constraintEnd_toStartOf="@id/btnMinus"
+                        android:onClick="matrixPlus"
+                    />
+                    <Button
+                        style="@style/MatrixCalcActivity"
+                        android:id="@+id/btnMinus"
+                        android:text="@string/btnMinus"
+                        app:layout_constraintStart_toEndOf="@id/btnPlus"
+                        app:layout_constraintTop_toBottomOf="@id/txtinplTwo"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:onClick="matrixMinus"
+                    />
+                    <Button
+                        style="@style/MatrixCalcActivity"
+                        android:id="@+id/btnFirstTimesSecond"
+                        android:text="@string/btnFirstTimesSecond"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/btnDeterminant"
+                        app:layout_constraintEnd_toStartOf="@id/btnSecondTimesFirst"
+                        android:onClick="firstTimesSecondMatrix"
+                    />
+                    <Button
+                            style="@style/MatrixCalcActivity"
+                            android:id="@+id/btnSecondTimesFirst"
+                            android:text="@string/btnSecondTimesFirst"
+                            app:layout_constraintStart_toEndOf="@id/btnFirstTimesSecond"
+                            app:layout_constraintTop_toBottomOf="@id/btnDeterminant"
+                            app:layout_constraintEnd_toStartOf="@id/btnInvers"
+                            android:onClick="secondTimesFirstMatrix"
+                    />
+                    <Button
+                            style="@style/MatrixCalcActivity"
+                            android:id="@+id/btnInvers"
+                            android:text="@string/btnInvers"
+                            app:layout_constraintStart_toEndOf="@id/btnSecondTimesFirst"
+                            app:layout_constraintTop_toBottomOf="@id/btnDeterminant"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:onClick="invertMatrix"
+                    />
+
             <android.support.design.widget.TextInputLayout
                     android:id="@+id/txtinplOne"
                     android:layout_width="0dp"
@@ -109,13 +115,29 @@
 
         </android.support.constraint.ConstraintLayout>
 
-        <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/infoOutput"
+        <View
+                android:id="@+id/lowestView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="25sp"
+                android:layout_height="6dp"
+                tools:background="@android:color/darker_gray"
+                android:layout_marginTop="5dp"
+        >
 
-        />
+        </View>
+
+        <android.support.v7.widget.RecyclerView
+                android:id="@+id/matrixRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                android:layout_marginTop="5dp"
+                android:clipToPadding="false"
+                android:padding="0dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:contextClickable="true">
+
+        </android.support.v7.widget.RecyclerView>
+
 
 
     </android.support.v7.widget.LinearLayoutCompat>
