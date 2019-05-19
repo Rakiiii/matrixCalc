@@ -13,7 +13,8 @@ class matrixClass(_width : Int = 2,
 
 
     //матрца
-    private var matrix : Array<Array<complexNumber>>
+    var matrix : Array<Array<complexNumber>>
+    private set
 
     //инициализация и первичное заполнение матрицы
     init
@@ -360,6 +361,19 @@ class matrixClass(_width : Int = 2,
     {
         return _empty
     }
+
+
+
+   /* fun sumOfMainMinors( order : Int) : complexNumber
+    {
+        if( order >= width )throw Exception("MatrixTooSmallException")
+        if(order == width)return this.determinant()
+        var res = complexNumber(fraction(1,0))
+        for(i in 0 until binCofs( width , order))
+        {
+
+        }
+    }*/
 
     /*fun quadratinqRedaction() : matrixClass
     {

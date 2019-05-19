@@ -105,9 +105,10 @@ class complexNumber(private var re : fraction = fraction(), private  var im : fr
     {
         when(other) {
             is complexNumber -> return ((this.re == other.re) && (this.im == other.im))
-            is Int -> return (this.re == other)
-            is Double -> return(this.re == other)
-            is Float -> return(this.re == other)
+            is fraction -> return (this.re == other)&&(this.im == fraction())
+            is Int -> return (this.re == other)&&(this.im == fraction())
+            is Double -> return(this.re == other)&&(this.im == fraction())
+            is Float -> return(this.re == other)&&(this.im == fraction())
             is String -> return(this == other.toComplex())
             else -> return false
         }
@@ -132,66 +133,3 @@ class complexNumber(private var re : fraction = fraction(), private  var im : fr
 
 }
 
-fun translateToComplex(line : String , signIm : Char = '+' , signRe : Char = '+'  ) : complexNumber
-{
-    if((signIm != '+' && signIm != '-') || (signRe != '+' && signRe != '-'))throw Exception("unnown char in complex number translation")
-    //разбиваем текущий столбец на отдельные цифры
-    var subIm = fraction()
-    if(line.substringAfter(signIm).filterNot { s->(s == 'i') }.isBlank())subIm = fraction(1,1)
-    else subIm = line.substringAfter(signIm).filterNot { s -> (s == 'i') }.toFraction()
-    var subRe = line.substringBefore(signIm).toFraction()
-
-    if(signRe == '-')subRe*=fraction(-1,1)
-    if(signIm == '-')subIm*= fraction(-1,1)
-    return complexNumber(subRe , subIm)
-}
-
-fun String.toComplex() : complexNumber
-{
-    var line = this
-    var signRe = '+'
-    if(line[0] == '-')
-    {
-        signRe = '-'
-        line = line.substringAfter('-')
-    }
-    when
-    {
-        line.contains('+') && line.contains('i', true) ->
-        {
-            return translateToComplex(line , '+' , signRe )
-        }
-        line.contains('-') && line.contains('i')->
-        {
-            return translateToComplex(line , '-' , signRe)
-        }
-        line.contains('i')->
-        {
-            var subIm = fraction()
-            if(line.filterNot { s->(s == 'i') }.isBlank())subIm = fraction(1,1)
-            else subIm = line.filterNot { s -> (s == 'i') }.toFraction()
-            if(signRe == '-')subIm*= fraction(-1,1)
-            return complexNumber(im = subIm)
-        }
-        else->
-        {
-            var subRe = line.toFraction()
-            if(signRe == '-')subRe *= fraction(-1,1)
-            return complexNumber(re = subRe)
-        }
-    }
-}
-
-fun String.countLines() : Int
-{
-    var counter = 0
-    for(i in this)if(i == '\n')counter++
-    return counter + 1
-}
-
-fun String.countWords() : Int
-{
-    var counter = 0
-    for( i in this)if( i == ' ')counter ++
-    return counter + 1
-}

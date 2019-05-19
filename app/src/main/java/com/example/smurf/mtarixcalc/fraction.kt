@@ -2,8 +2,15 @@ package com.example.smurf.mtarixcalc
 
 import kotlin.math.absoluteValue
 
-class fraction (private var upper : Int = 0 , private var lower : Int = 1)
+class fraction (_upper : Int = 0 , _lower : Int = 1)
 {
+
+    var upper = _upper
+    private set
+
+    var lower = _lower
+    private set
+
     operator fun plus(right : Any?) : fraction
     {
         when(right)
@@ -36,7 +43,7 @@ class fraction (private var upper : Int = 0 , private var lower : Int = 1)
             {
                 if (right.upper == 0) return this
                 if (this.upper == 0)
-                    return right
+                    return fraction( _upper = - right.upper , _lower = right.lower)
                 val res = fraction(this.upper * right.lower - this.lower * right.upper, this.lower * right.lower)
                 if (res.lower < 0) {
                     res.upper *= -1
@@ -157,29 +164,3 @@ class fraction (private var upper : Int = 0 , private var lower : Int = 1)
 
 }
 
-fun gcd( a : Int , b : Int) : Int
-{
-    if(b == 0)return a
-    else return gcd( b ,a % b )
-}
-
-fun String.toFraction():fraction
-{
-    when
-    {
-        (this.contains('.'))->return fraction(this.filterNot{s -> (s == '.' )}.filterNot { s -> (s ==')' && (s == '(')) }.toInt() ,
-            10.pow( this.substringAfter('.').filterNot { s -> (s == ')') }.length))
-        (this.contains('/')) -> return fraction(this.substringBefore('/').filterNot { s -> (s == '(') }.toInt(),
-            this.substringAfter('/').filterNot { s -> (s == ')') }.toInt())
-        else -> return fraction(this.filterNot { s -> (s == '(' && s == ')' ) }.toInt(), 1)
-    }
-}
-
-fun Int.pow(x : Int) : Int
-{
-    if (x == 0)return 1
-    var res : Int = 1
-    for( i in 1..x)
-        res *=this
-    return res
-}

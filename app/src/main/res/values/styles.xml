@@ -6,19 +6,43 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
     </style>
     
     <style name="MainActivityBtn" parent="Theme.AppCompat.DayNight">
         <item name="android:layout_width">200dp</item>
         <item name="android:layout_height">80dp</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
     </style>
 
-    <style name="MatrixCalcActivity" parent="Theme.AppCompat.DayNight">
-        <item name="android:layout_height">40dp</item>
-        <item name="android:layout_width">110dp</item>
-        <item name="android:layout_marginStart">10dp</item>
-        <item name="android:layout_marginTop">20dp</item>
-        <item name="android:layout_marginEnd">10dp</item>
+    <style name="btnStyle" parent="Theme.AppCompat.DayNight">
+        <item name="android:background">@android:color/white</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:layout_gravity">fill</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
+    </style>
+
+    <style name="frameLayoutStyle" parent="Theme.AppCompat.DayNight">
+        <item name="android:background">@android:color/white</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="drawerLayoutStyle" parent="Theme.AppCompat.DayNight">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:background">@android:color/white</item>
+    </style>
+
+    <style name="cardStyle" parent="Theme.AppCompat.DayNight">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="cardCornerRadius">4dp</item>
+        <item name="cardElevation">5dp</item>
+        <item name="android:layout_marginTop">5dp</item>
     </style>
 
 </resources>

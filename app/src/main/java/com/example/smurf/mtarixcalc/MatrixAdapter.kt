@@ -14,11 +14,9 @@ class matrixAdapter(val context: Context , val firstMatrix : EditText , val seco
 
         private var listOfMatrix : ArrayList<matrixGroup> = ArrayList()
 
-        var pos : Int = 0
-
         fun addNewElem(group : matrixGroup)
         {
-            listOfMatrix.add(group)
+            listOfMatrix.add(0 ,group)
             notifyDataSetChanged()
         }
 
@@ -27,6 +25,28 @@ class matrixAdapter(val context: Context , val firstMatrix : EditText , val seco
             listOfMatrix.clear()
             notifyDataSetChanged()
         }
+
+        fun removeElement( position: Int)
+        {
+            listOfMatrix.removeAt(position)
+            notifyDataSetChanged()
+        }
+
+        fun getData( position: Int) = listOfMatrix[position]
+
+        fun restoreItem(position: Int , matrixGroup: matrixGroup)
+        {
+            listOfMatrix.add(position , matrixGroup)
+            notifyItemInserted(position)
+        }
+
+        fun setList( newArray : ArrayList<matrixGroup>)
+        {
+            listOfMatrix = newArray
+            notifyDataSetChanged()
+        }
+
+        fun getList() = listOfMatrix
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): matrixViewHolder
     {
@@ -37,61 +57,55 @@ class matrixAdapter(val context: Context , val firstMatrix : EditText , val seco
     {
         holder.bind(listOfMatrix[position])
 
-        holder.itemView.setOnCreateContextMenuListener( object : View.OnCreateContextMenuListener
-        {
-            override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
-                menu!!.add(0, 0, 0, "copy left matrix").
-                        setOnMenuItemClickListener( object : MenuItem.OnMenuItemClickListener
-                        {
-                            override fun onMenuItemClick(item: MenuItem?): Boolean
-                            {
-                                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                        val clip = ClipData.newPlainText("some", holder.leftMatrix.text)
-                                        clipboard.primaryClip = clip
 
+        //листенер для контекстного меню на левую матрицу
+        holder.leftMatrix.setOnCreateContextMenuListener( object : View.OnCreateContextMenuListener
+        {
+            override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?)
+            {
+                if(menu != null)
+                {
+                    //вставка в первую матрицу
+                    menu.add(0, 0, 0, "Paste to A")
+                        .setOnMenuItemClickListener(object : MenuItem.OnMenuItemClickListener {
+                            override fun onMenuItemClick(item: MenuItem?): Boolean {
+                                firstMatrix.text = SpannableStringBuilder(holder.leftMatrix.text.toString())
                                 return true
                             }
                         })
-                menu.add(0,1,1 , "copy right matrix").
-                    setOnMenuItemClickListener( object : MenuItem.OnMenuItemClickListener
-                    {
-                        override fun onMenuItemClick(item: MenuItem?): Boolean {
-                                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                    val clip = ClipData.newPlainText("some", holder.rightMatrix.text.toString().filterNot { s -> (s == '=') } )
-                                    clipboard.primaryClip = clip
-                            return true
-                        }
-                    })
-                menu.add(0,2,2, "copy result").
-                    setOnMenuItemClickListener( object : MenuItem.OnMenuItemClickListener
-                    {
-                        override fun onMenuItemClick(item: MenuItem?): Boolean {
-                                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                    val clip = ClipData.newPlainText("some", holder.resMatrix.text)
-                                    clipboard.primaryClip = clip
-                            return true
-                        }
-                    })
-                menu.add(0, 3, 3, "paste left matrix to A").
+
+                    //втсавка вл вторую матрицу
+                    menu.add(1, 1, 1, "Paste to B")
+                        .setOnMenuItemClickListener(object : MenuItem.OnMenuItemClickListener {
+                            override fun onMenuItemClick(item: MenuItem?): Boolean {
+                                secondMatrix.text = SpannableStringBuilder(holder.leftMatrix.text.toString())
+                                return true
+                            }
+                        })
+
+                    //вставка в клипбоард
+                    menu.add(2,2,2,"Copy").
                         setOnMenuItemClickListener( object : MenuItem.OnMenuItemClickListener
                         {
                             override fun onMenuItemClick(item: MenuItem?): Boolean {
-                                when(holder.adapterPosition)
-                                {
-                                    else -> firstMatrix.text = SpannableStringBuilder(holder.leftMatrix.text.toString())
-                                }
+                                val clipboard = context.getSystemService( Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                val clip = ClipData.newPlainText("some" , holder.leftMatrix.text.toString())
+                                clipboard.primaryClip = clip
                                 return true
                             }
                         })
-                menu.add(0, 4, 4, "paste right matrix to A").
-                    setOnMenuItemClickListener( object : MenuItem.OnMenuItemClickListener
-                    {
-                        override fun onMenuItemClick(item: MenuItem?): Boolean {
-                           firstMatrix.text = SpannableStringBuilder(holder.rightMatrix.text.toString().filterNot { s -> (s == '=') } )
-                            return true
-                        }
-                    })
-                menu.add( 0 , 5 ,5 , "paste result to A").
+                }
+            }
+        })
+
+
+
+        holder.resMatrix.setOnCreateContextMenuListener( object : View.OnCreateContextMenuListener
+        {
+            override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+                if(menu != null)
+                {
+                    menu.add(0,0,0,"Paste to A").
                         setOnMenuItemClickListener( object : MenuItem.OnMenuItemClickListener
                         {
                             override fun onMenuItemClick(item: MenuItem?): Boolean {
@@ -99,31 +113,57 @@ class matrixAdapter(val context: Context , val firstMatrix : EditText , val seco
                                 return true
                             }
                         })
+                    menu.add(1, 1, 1, "Paste to B")
+                        .setOnMenuItemClickListener(object : MenuItem.OnMenuItemClickListener {
+                            override fun onMenuItemClick(item: MenuItem?): Boolean {
+                                secondMatrix.text = SpannableStringBuilder(holder.resMatrix.text.toString())
+                                return true
+                            }
+                        })
+                    menu.add(2,2,2,"Copy").setOnMenuItemClickListener( object : MenuItem.OnMenuItemClickListener
+                    {
+                        override fun onMenuItemClick(item: MenuItem?): Boolean {
+                            val clipboardManager  = context.getSystemService( Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clip = ClipData.newPlainText("some" , holder.resMatrix.text.toString())
+                            clipboardManager.primaryClip = clip
+                            return true
+                        }
+                    })
+                }
+            }
 
-                menu.add(0, 6, 6, "paste left matrix to B").
-                    setOnMenuItemClickListener( object : MenuItem.OnMenuItemClickListener
+        })
+
+        holder.rightMatrix.setOnCreateContextMenuListener( object  : View.OnCreateContextMenuListener
+        {
+            override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+                if(menu != null)
+                {
+                    menu.add(0,0,0,"Paste to A").
+                        setOnMenuItemClickListener( object : MenuItem.OnMenuItemClickListener
+                        {
+                            override fun onMenuItemClick(item: MenuItem?): Boolean {
+                                firstMatrix.text = SpannableStringBuilder(holder.rightMatrix.text.toString().filterNot { s -> s == '=' })
+                                return true
+                            }
+                        })
+                    menu.add(1, 1, 1, "Paste to B")
+                        .setOnMenuItemClickListener(object : MenuItem.OnMenuItemClickListener {
+                            override fun onMenuItemClick(item: MenuItem?): Boolean {
+                                secondMatrix.text = SpannableStringBuilder(holder.rightMatrix.text.toString().filterNot { s -> s == '=' })
+                                return true
+                            }
+                        })
+                    menu.add(2,2,2,"Copy").setOnMenuItemClickListener( object : MenuItem.OnMenuItemClickListener
                     {
                         override fun onMenuItemClick(item: MenuItem?): Boolean {
-                            secondMatrix.text = SpannableStringBuilder(holder.leftMatrix.text.toString())
+                            val clipboardManager  = context.getSystemService( Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clip = ClipData.newPlainText("some" , holder.rightMatrix.text.toString().filterNot { s -> s == '=' })
+                            clipboardManager.primaryClip = clip
                             return true
                         }
                     })
-                menu.add(0, 7, 7, "paste right matrix to B").
-                    setOnMenuItemClickListener( object : MenuItem.OnMenuItemClickListener
-                    {
-                        override fun onMenuItemClick(item: MenuItem?): Boolean {
-                            secondMatrix.text = SpannableStringBuilder(holder.rightMatrix.text.toString().filterNot { s -> (s == '=') } )
-                            return true
-                        }
-                    })
-                menu.add( 0 , 8 ,8 , "paste result to B").
-                    setOnMenuItemClickListener( object : MenuItem.OnMenuItemClickListener
-                    {
-                        override fun onMenuItemClick(item: MenuItem?): Boolean {
-                            secondMatrix.text = SpannableStringBuilder(holder.resMatrix.text.toString())
-                            return true
-                        }
-                    })
+                }
             }
         })
     }
@@ -138,12 +178,8 @@ class matrixAdapter(val context: Context , val firstMatrix : EditText , val seco
 
 
         class matrixViewHolder constructor(itemView : View ) : RecyclerView.ViewHolder (itemView)
-        //, View.OnCreateContextMenuListener
         {
-           /* init
-            {
-                    //itemView.setOnCreateContextMenuListener(this)
-            }*/
+
 
 
 
@@ -161,8 +197,8 @@ class matrixAdapter(val context: Context , val firstMatrix : EditText , val seco
             {
                 leftMatrix.text = group.leftMatrix.toString('|')
                 if(!group.rightMatrix.isEmpty()) rightMatrix.text =(group.rightMatrix.toString('|').substringBefore('\n') +
-                        " =" +
-                        "\n" +
+                        "    =" +
+                        "\n"    +
                         group.rightMatrix.toString('|').substringAfter('\n'))
                 resMatrix.text = group.resMatrix.toString('|')
                 sign.text = group.sign

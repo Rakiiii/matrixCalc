@@ -1,12 +1,21 @@
 package com.example.smurf.mtarixcalc
 
 //import android.support.v7.widget.RecyclerView
+import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.NavigationView
+import android.support.design.widget.Snackbar
+import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.text.SpannableStringBuilder
+import android.view.MenuItem
 import android.view.View
+import com.example.smurf.mtarixcalc.R.id.*
 import kotlinx.android.synthetic.main.activity_matrix_calc.*
 import org.jetbrains.anko.toast
 
@@ -17,21 +26,66 @@ class MatrixCalcActivity : AppCompatActivity() {
     private lateinit var matrixRecycler : RecyclerView
     private lateinit var matrixRecyclerLayoutManager: LinearLayoutManager
     private lateinit var matrixRecyclerAdapter: matrixAdapter
+    private lateinit var mToggler : ActionBarDrawerToggle
 
+    private lateinit var mMatrixRecyclerViewModel : MatrixRecyclerViewModel
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         try {
+
+            //val model = ViewModelProviders.of(this).get(OurModel::class.java!!)
             super.onCreate(savedInstanceState)
             setContentView(R.layout.activity_matrix_calc)
 
-            initRecycleView()
-            //matrixRecyclerAdapter.addNewElem(matrixGroup(matrixClass() , matrixClass() , "" , matrixClass()))
-            //matrixRecyclerAdapter.addNewElem(matrixGroup(matrixClass() , matrixClass() , "" , matrixClass()))
+            mMatrixRecyclerViewModel = ViewModelProviders.of(this).get(MatrixRecyclerViewModel::class.java)
 
-            registerForContextMenu(matrixRecycler)
-            //КОНТЕКСТНОЕ МЕНЮ ДЛЯ ТЕКСТА
-            //registerForContextMenu(infoOutput)
+            initRecycleView()
+
+            mToggler  = ActionBarDrawerToggle(this , matrixDrawerLayout , R.string.open ,R.string.close)
+
+            matrixDrawerLayout.addDrawerListener(mToggler)
+
+            mToggler.syncState()
+
+            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+
+            //обработчик нажатия в навигационном дровере
+            matrixNavigationView.setNavigationItemSelectedListener( object : NavigationView.OnNavigationItemSelectedListener
+            {
+                override fun onNavigationItemSelected(item: MenuItem): Boolean {
+                    when(item.itemId)
+                    {
+                        matrixCalcBtn->
+                        {
+                            item.isChecked = true
+                            matrixDrawerLayout.closeDrawers()
+                            return true
+                        }
+                        polinomicCalculationBtn->
+                        {
+                            item.isChecked = true
+                            matrixDrawerLayout.closeDrawers()
+                            val polIntent = Intent( this@MatrixCalcActivity , activity_polinom_calc::class.java)
+                            startActivity(polIntent)
+                            return true
+                        }
+                        aboutBtn->
+                        {
+                            return true
+                        }
+                        else ->return false
+                    }
+                }
+            })
+
+
+            //удаление и возврат по свайпу
+            enableSwipeToDeleteAndUndo()
+
+            if(!mMatrixRecyclerViewModel.isEmpty())matrixRecyclerAdapter.setList(mMatrixRecyclerViewModel.getList())
+
         }
         catch (e : Exception)
         {
@@ -42,6 +96,16 @@ class MatrixCalcActivity : AppCompatActivity() {
 
     }
 
+
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean
+    {
+        if(mToggler.onOptionsItemSelected(item)) return true
+        return super.onOptionsItemSelected(item)
+    }
+
+
+    //инициализация кecycleView
     private fun initRecycleView()
     {
         matrixRecyclerLayoutManager = LinearLayoutManager(this)
@@ -64,6 +128,7 @@ class MatrixCalcActivity : AppCompatActivity() {
         {
            // infoOutput.text = ("Determinant is " + (matrixClass(firstMatrix).determinant().toString()))
             matrixRecyclerAdapter.addNewElem(
+                mMatrixRecyclerViewModel.add(
                 matrixGroup(
                     leftMatrix = matrixClass(firstMatrix),
                     sign = "Det",
@@ -71,6 +136,7 @@ class MatrixCalcActivity : AppCompatActivity() {
                     resMatrix = matrixClass(1 , matrixClass(firstMatrix).determinant()
                     )
                 )
+            )
             )
         }
         catch (e : Exception)
@@ -85,12 +151,14 @@ class MatrixCalcActivity : AppCompatActivity() {
         {
            // infoOutput.text = (matrixClass(firstMatrix) + matrixClass(secondMatrix)).toString()
             matrixRecyclerAdapter.addNewElem(
+                mMatrixRecyclerViewModel.add(
                 matrixGroup(
                     leftMatrix = matrixClass(firstMatrix),
                     sign = "+",
                     rightMatrix = matrixClass(secondMatrix),
                     resMatrix = (matrixClass(firstMatrix) + matrixClass(secondMatrix))
                 )
+            )
             )
         }
         catch (e : Exception)
@@ -105,12 +173,14 @@ class MatrixCalcActivity : AppCompatActivity() {
         {
             //infoOutput.text = (matrixClass(firstMatrix) - matrixClass(secondMatrix)).toString()
             matrixRecyclerAdapter.addNewElem(
+                mMatrixRecyclerViewModel.add(
                 matrixGroup(
                     leftMatrix = matrixClass(firstMatrix),
                     sign = "-",
                     rightMatrix = matrixClass(secondMatrix),
                     resMatrix = (matrixClass(firstMatrix) - matrixClass(secondMatrix))
                 )
+            )
             )
         }
         catch (e : Exception)
@@ -125,6 +195,7 @@ class MatrixCalcActivity : AppCompatActivity() {
         {
             //infoOutput.text = (matrixClass(firstMatrix) * matrixClass(secondMatrix)).toString()
             matrixRecyclerAdapter.addNewElem(
+                mMatrixRecyclerViewModel.add(
                 matrixGroup(
                     leftMatrix = matrixClass(firstMatrix),
                     sign = "*",
@@ -132,6 +203,7 @@ class MatrixCalcActivity : AppCompatActivity() {
                     resMatrix = (matrixClass(firstMatrix) * matrixClass(secondMatrix))
                 )
             )
+           )
         }
         catch(e : Exception)
         {
@@ -145,12 +217,14 @@ class MatrixCalcActivity : AppCompatActivity() {
         {
             //infoOutput.text = (matrixClass(secondMatrix) * matrixClass(firstMatrix) ).toString()
             matrixRecyclerAdapter.addNewElem(
+                mMatrixRecyclerViewModel.add(
                 matrixGroup(
                     leftMatrix = matrixClass(secondMatrix),
                     sign = "*",
                     rightMatrix = matrixClass(firstMatrix),
                     resMatrix = (matrixClass(secondMatrix) * matrixClass(firstMatrix))
                 )
+            )
             )
         }
         catch(e : Exception)
@@ -165,6 +239,7 @@ class MatrixCalcActivity : AppCompatActivity() {
         {
             //infoOutput.text = matrixClass(firstMatrix).invers().toString()
             matrixRecyclerAdapter.addNewElem(
+                mMatrixRecyclerViewModel.add(
                 matrixGroup(
                     leftMatrix = matrixClass(firstMatrix),
                     sign = "Inv",
@@ -172,7 +247,7 @@ class MatrixCalcActivity : AppCompatActivity() {
                     resMatrix = matrixClass(firstMatrix).invers()
                 )
             )
-
+            )
         }
         catch (e : Exception)
         {
@@ -181,52 +256,36 @@ class MatrixCalcActivity : AppCompatActivity() {
     }
 
 
-    /*override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?)
+    private fun enableSwipeToDeleteAndUndo()
     {
-        if(menu != null)
-        {
-            menu.add(0, 0, 0, "paste to A")
-            menu.add(0, 1, 1, "paste to B")
-            menu.add(0, 2, 2, "copy")
-        }
-    }*/
+        val swipeToDeleteCallback = object : SwipeToDeleteCallback(this) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
 
-    /*override fun onContextItemSelected(item: MenuItem?): Boolean
-    {
 
-        var pos : Int = -1
-        try
-        {
-            pos =   matrixRecyclerAdapter.pos
+                val position = viewHolder.adapterPosition
+                val item = matrixRecyclerAdapter.getData(position)
 
-        }catch (e : java.lang.Exception)
-        {
-            return super.onContextItemSelected(item)
-        }
-        when (item!!.itemId)
-        {
-                0 -> {
+                matrixRecyclerAdapter.removeElement(position)
 
-                    if(item is TextView)
-                    firstMatrix.text = SpannableStringBuilder(item.text.toString())
-                    return true
+
+                val snackbar = Snackbar
+                    .make( matrixFrame , "Item was removed from the list.", Snackbar.LENGTH_LONG)
+                snackbar.setAction("UNDO") {
+                    matrixRecyclerAdapter.restoreItem(position , item)
+                    matrixRecycler.scrollToPosition(position)
                 }
-                1 -> {
-                    if(item is TextView)
-                    secondMatrix.text = SpannableStringBuilder(item.text.toString())
-                    return true
-                }
-                else -> {
-                    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    if(item is TextView) {
-                        val clip = ClipData.newPlainText("some", item.text)
-                        clipboard.primaryClip = clip
-                        return true
-                    }
-                    throw Exception("Bad copy")
-                }
+
+                snackbar.setActionTextColor(Color.YELLOW)
+                snackbar.show()
+
+                mMatrixRecyclerViewModel.updateList(matrixRecyclerAdapter.getList())
+
+            }
         }
 
-    }*/
+        val itemTouchhelper = ItemTouchHelper(swipeToDeleteCallback)
+        itemTouchhelper.attachToRecyclerView(matrixRecycler)
+    }
+
 
 }
